@@ -29,31 +29,8 @@ RUN make && \
     make install && \
     make install-hotplug
 WORKDIR /
-RUN apk del vim
-
-# Build and install brlaser from source
-RUN apk add --no-cache git cmake && \
-    git clone https://github.com/pdewacht/brlaser.git && \
-    cd brlaser && \
-    cmake . && \
-    make && \
-    make install && \
-    cd .. && \
-    rm -rf brlaser
-
-# Build and install gutenprint from source
-RUN wget -O gutenprint-5.3.5.tar.xz https://sourceforge.net/projects/gimp-print/files/gutenprint-5.3/5.3.5/gutenprint-5.3.5.tar.xz/download && \
-    tar -xJf gutenprint-5.3.5.tar.xz && \
-    cd gutenprint-5.3.5 && \
-    # Patch to rename conflicting PAGESIZE identifiers to GPT_PAGESIZE in all files in src/testpattern
-    find src/testpattern -type f -exec sed -i 's/\bPAGESIZE\b/GPT_PAGESIZE/g' {} + && \
-    ./configure && \
-    make -j$(nproc) && \
-    make install && \
-    cd .. && \
-    rm -rf gutenprint-5.3.5 gutenprint-5.3.5.tar.xz && \
-    # Fix cups-genppdupdate script shebang
-    sed -i '1s|.*|#!/usr/bin/perl|' /usr/sbin/cups-genppdupdate
+RUN apk del vim && \
+    rm -rf /var/cache/apk/*
 
 # This will use port 631
 EXPOSE 631
@@ -82,5 +59,3 @@ RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && 
 	echo "ReadyPaperSizes A4,TA4,4X6FULL,T4X6FULL,2L,T2L,A6,A5,B5,L,TL,INDEX5,8x10,T8x10,4X7,T4X7,Postcard,TPostcard,ENV10,EnvDL,ENVC6,Letter,Legal" >> /etc/cups/cupsd.conf && \
 	echo "DefaultPaperSize Letter" >> /etc/cups/cupsd.conf && \
 	echo "pdftops-renderer ghostscript" >> /etc/cups/cupsd.conf
-
-RUN rm -rf /var/cache/apk/*
