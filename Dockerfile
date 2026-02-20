@@ -21,6 +21,14 @@ RUN echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/testing\nhttps://dl-cdn.
 	perl \
 	&& rm -rf /var/cache/apk/*
 
+# Build and install foo2zjs
+ADD foo2zjs/foo2zjs.tar.gz /
+ADD foo2zjs/sihp1020.dl /usr/share/foo2zjs/firmware/
+WORKDIR /build
+RUN make && \
+    make install && \
+    make install-hotplug
+
 # Build and install brlaser from source
 RUN apk add --no-cache git cmake && \
     git clone https://github.com/pdewacht/brlaser.git && \
