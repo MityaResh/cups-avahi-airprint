@@ -24,7 +24,7 @@ RUN echo -e "https://dl-cdn.alpinelinux.org/alpine/edge/testing\nhttps://dl-cdn.
 # Build and install foo2zjs
 ADD foo2zjs/foo2zjs.tar.gz /
 ADD foo2zjs/sihp1020.dl /usr/share/foo2zjs/firmware/
-WORKDIR /build
+WORKDIR /foo2zjs
 RUN make && \
     make install && \
     make install-hotplug
