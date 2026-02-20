@@ -3,13 +3,16 @@ version: '3.5'
 services:
   cups:
     container_name: cups
-    image: chuckcharlie/cups-avahi-airprint
-    #build: .
-    restart: always
-    network_mode: "host"
+    build: .
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
     environment:
       CUPSADMIN: cups
       CUPSPASSWORD: cups
     volumes:
-      - "./services:/services"
-      - "./config:/config"
+      - ./services:/services
+      - ./config:/config
+    devices:
+      - /dev/usb/lp0:/dev/usb/lp0
+      - /dev/hplj1020-0:/dev/hplj1020-0
